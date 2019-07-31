@@ -3,20 +3,25 @@ import React, { Component } from 'react';
 class DebounceReact extends Component {
     constructor() {
         super()
-        this.state = { q: "" }
+        this.state = { 
+            q: ""
+        }
     }
 
     changeQuery = ((e) => {
         this.setState({searchDebounce: e.target.value}, () => {
-            this.autocompleteSearch();
+            this.autocompleteSearch(this.state.q);
         });
     })
+
+    autocompleteSearch = (q) => {
+    }
 
     render() {
         return (
             <div>
                 <p>{this.state.searchDebounce}</p>
-                <input type='search' onChange={this.changeQuery} />
+                <input placeholder="Please type something..." type='text' value={this.state.q} onChange={this.changeQuery} />
             </div>
         )
     }
