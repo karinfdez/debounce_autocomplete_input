@@ -6,43 +6,55 @@ class DebounceReact extends Component {
         super()
         this.state = { 
             q: "",
+            countries: []
         }
         this.searchDebounced = debounce(500, this.autocompleteSearch);
     }
 
     changeQuery = ((e) => {
         this.setState({q: e.target.value}, () => {
-            if(this.state.q) {
-                this.searchDebounced(this.state.q);
-            }
+            this.state.q.length > 0 && 
+            this.searchDebounced(this.state.q);
         });
     })
 
     autocompleteSearch = (q) => {
-        this.fetchNames(q).then(namesList => {
-            console.log(namesList);
+        this.fetchNames(q).then(countriesList => {
+            console.log('list countries', countriesList);
         })
     }
 
     fetchNames = (q) => {
         return new Promise((resolve, reject) => {
-            const Http = new XMLHttpRequest();
-            const url='https://gist.githubusercontent.com/keeguon/2310008/raw/bdc2ce1c1e3f28f9cab5b4393c7549f38361be4e/countries.json';
-            Http.onreadystatechange = (e) => {
-                if (Http.readyState === 4 && Http.status === 200) {
-                    resolve( Http.responseText);
-                 }
-            }
-            Http.open("GET", url);
-            Http.send();
+            const url = "https://restcountries.eu/rest/v2/all";
+            fetch(url, {method: 'get'})
+            .then((response) => {
+                return response.json();
+            })
+            .then((myJson) => {
+                resolve(myJson)
+            }).catch((err) => {
+                throw new Error(err.message);
+            });
         })
+    }
+
+    renderList() {
+        const { q } = this.state;
+        return (
+            q.length === 0 ? null : (
+                <ul>
+                    {this.state.countries.map((countryObj) => <li>{countryObj}</li>)}
+                </ul>
+            )
+        )
     }
 
     render() {
         return (
             <div>
-                <p>{this.state.q}</p>
-                <input placeholder="Please type something..." type='text' value={this.state.q} onChange={this.changeQuery} />
+                <input placeholder="Enter a country name..." type='text' value={this.state.q} onChange={this.changeQuery} />
+                {this.renderList()}
             </div>
         )
     }
