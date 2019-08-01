@@ -6,25 +6,36 @@ class DebounceReact extends Component {
         super()
         this.state = { 
             q: "",
-            countries: []
+            countries: [],
+            filteredList: []
         }
-        this.searchDebounced = debounce(500, this.autocompleteSearch);
+        this.searchDebounced = debounce(600, this.autocompleteSearch);
     }
 
     changeQuery = ((e) => {
         this.setState({q: e.target.value}, () => {
-            this.state.q.length > 0 && 
             this.searchDebounced(this.state.q);
         });
     })
 
     autocompleteSearch = (q) => {
-        this.fetchNames(q).then(countriesList => {
-            console.log('list countries', countriesList);
-        })
+        if(q.length > 0) {
+            //This fetch is mocking a future request with different query based on user input
+            this.fetchNames()
+            .then(countriesList => {
+                let filteredList = [];
+                this.setState({countries: countriesList}, () => {
+                    const regex = new RegExp(`^${q}`,'i');
+                    filteredList = this.state.countries.filter(v => {
+                        return v.name.match(regex);
+                    })
+                })
+                this.setState({filteredList});
+            })
+        }
     }
 
-    fetchNames = (q) => {
+    fetchNames = () => {
         return new Promise((resolve, reject) => {
             const url = "https://restcountries.eu/rest/v2/all";
             fetch(url, {method: 'get'})
@@ -43,8 +54,11 @@ class DebounceReact extends Component {
         const { q } = this.state;
         return (
             q.length === 0 ? null : (
-                <ul>
-                    {this.state.countries.map((countryObj) => <li>{countryObj}</li>)}
+                <ul className="filtered-list">
+                    {this.state.filteredList.length > 0 &&
+                    this.state.filteredList.map((countryObj) => 
+                        <li key={countryObj.alpha2Code}>{countryObj.name}</li>
+                    )}
                 </ul>
             )
         )
@@ -52,8 +66,12 @@ class DebounceReact extends Component {
 
     render() {
         return (
-            <div>
-                <input placeholder="Enter a country name..." type='text' value={this.state.q} onChange={this.changeQuery} />
+            <div className='wrapper'>
+                <input 
+                    placeholder="Enter a country name..." 
+                    type='text' value={this.state.q} 
+                    onChange={this.changeQuery} 
+                />
                 {this.renderList()}
             </div>
         )
