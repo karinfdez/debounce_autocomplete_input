@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { debounce } from "throttle-debounce";
 import PropTypes from 'prop-types';
+
 class AutoCompleteTextBox extends Component {
     constructor(props) {
         super(props)
@@ -9,13 +10,15 @@ class AutoCompleteTextBox extends Component {
             countries: [],
             filteredList: []
         }
-        this.searchDebounced = debounce(this.props.debounceTime, 
-        this.autocompleteSearch);
+        this.searchDebounced = debounce(this.props.debounceTime, this.autocompleteSearch);
     }
 
     changeQuery = ((e) => {
+        this.state.filteredList.length > 0 && this.setState({filteredList: []});
         this.setState({inputText: e.target.value}, () => {
-            this.searchDebounced(this.state.inputText);
+            if(this.state.inputText.length === this.props.numberTypeChars) {
+                this.searchDebounced(this.state.inputText);
+            }
         });
     })
 
@@ -54,14 +57,15 @@ class AutoCompleteTextBox extends Component {
     }
 
     renderFilteredList() {
-        const { inputText } = this.state;
+        const { inputText, filteredList } = this.state;
         return (
-            inputText.length === 0 ? null : (
+            inputText.length === 0  ? null : (
                 <ul className="filtered-list">
-                    {this.state.filteredList.length > 0 &&
-                    this.state.filteredList.map((countryObj) => 
-                        <li key={countryObj.alpha2Code}>{countryObj.name}</li>
-                    )}
+                    {filteredList.length > 0 && (
+                        filteredList.map((countryObj) => 
+                            <li key={countryObj.alpha2Code}>{countryObj.name}</li>
+                        ))
+                    }
                 </ul>
             )
         )
@@ -83,12 +87,14 @@ class AutoCompleteTextBox extends Component {
 
 AutoCompleteTextBox.propTypes = {
     url: PropTypes.string.isRequired,
-    debounceTime: PropTypes.number.isRequired
+    debounceTime: PropTypes.number,
+    numberTypeChars: PropTypes.number
 }
 
 AutoCompleteTextBox.defaultProps = {
     url: '',
-    debounceTime: 500
+    debounceTime: 500,
+    numberTypeChars: 1
 }
 
 
