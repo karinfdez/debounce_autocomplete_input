@@ -14,17 +14,19 @@ class AutoCompleteTextBox extends Component {
     }
 
     changeQuery = ((e) => {
-        this.state.filteredList.length > 0 && this.setState({filteredList: []});
+        this.state.filteredList.length > 0 && 
+        this.setState({filteredList: []});
         this.setState({inputText: e.target.value}, () => {
-            if(this.state.inputText.length === this.props.numberTypeChars) {
+            if(this.state.inputText.length >= this.props.numberTypeChars) {
                 this.searchDebounced(this.state.inputText);
             }
         });
     })
 
     autocompleteSearch = (inputText) => {
-        if(inputText.length > 0) {
-            //This fetch is mocking a future request with different query based on user input
+        if(inputText.length >= this.props.numberTypeChars) {
+            //This fetch is mocking a future request with different 
+            //query everytime there is a change when user types
             this.fetchNames()
             .then(countriesList => {
                 let filteredList = [];
@@ -48,12 +50,19 @@ class AutoCompleteTextBox extends Component {
             .then((response) => {
                 return response.json();
             })
-            .then((myJson) => {
-                resolve(myJson)
+            .then((jsonResult) => {
+                resolve(jsonResult)
             }).catch((err) => {
                 reject(Error(err.message));
             });
         })
+    }
+
+    selectSuggestion(value) {
+        this.setState(() => ({
+            inputText: value,
+            filteredList: []
+        }))              
     }
 
     renderFilteredList() {
@@ -63,7 +72,12 @@ class AutoCompleteTextBox extends Component {
                 <ul className="filtered-list">
                     {filteredList.length > 0 && (
                         filteredList.map((countryObj) => 
-                            <li key={countryObj.alpha2Code}>{countryObj.name}</li>
+                            <li 
+                                key={countryObj.alpha2Code} 
+                                onClick={() => this.selectSuggestion(countryObj.name)}
+                            >
+                                {countryObj.name}
+                            </li>
                         ))
                     }
                 </ul>
@@ -76,7 +90,8 @@ class AutoCompleteTextBox extends Component {
             <div className='wrapper'>
                 <input 
                     placeholder="Enter a country name..." 
-                    type='text' value={this.state.inputText} 
+                    value={this.state.inputText} 
+                    type='text' 
                     onChange={this.changeQuery} 
                 />
                 {this.renderFilteredList()}
