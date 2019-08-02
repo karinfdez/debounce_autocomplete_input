@@ -6,6 +6,7 @@ function App() {
   return ( 
     <AutoCompleteTextbox 
       url="https://restcountries.eu/rest/v2/all"
+      debounceTime={500}
     />
   );
 }

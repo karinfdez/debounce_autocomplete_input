@@ -1,33 +1,35 @@
 import React, { Component } from 'react';
 import { debounce } from "throttle-debounce";
-
+import PropTypes from 'prop-types';
 class AutoCompleteTextBox extends Component {
     constructor(props) {
         super(props)
         this.state = { 
-            q: "",
+            inputText: "",
             countries: [],
             filteredList: []
         }
-        this.searchDebounced = debounce(600, this.autocompleteSearch);
+        this.searchDebounced = debounce(this.props.debounceTime, 
+        this.autocompleteSearch);
     }
 
     changeQuery = ((e) => {
-        this.setState({q: e.target.value}, () => {
-            this.searchDebounced(this.state.q);
+        this.setState({inputText: e.target.value}, () => {
+            this.searchDebounced(this.state.inputText);
         });
     })
 
-    autocompleteSearch = (q) => {
-        if(q.length > 0) {
+    autocompleteSearch = (inputText) => {
+        if(inputText.length > 0) {
             //This fetch is mocking a future request with different query based on user input
             this.fetchNames()
             .then(countriesList => {
                 let filteredList = [];
-                this.setState({countries: countriesList}, () => {
-                    const regex = new RegExp(`^${q}`,'i');
-                    filteredList = this.state.countries.filter(v => {
-                        return v.name.match(regex);
+                this.setState({countries: countriesList}, 
+                    () => {
+                    const regex = new RegExp(`^${inputText}`,'i');
+                    filteredList = this.state.countries.filter(countryObj => {
+                        return countryObj.name.match(regex);
                     })
                 })
                 this.setState({filteredList});
@@ -39,8 +41,7 @@ class AutoCompleteTextBox extends Component {
 
     fetchNames = () => {
         return new Promise((resolve, reject) => {
-            const url = this.props.url;
-            fetch(url, {method: 'get'})
+            fetch(this.props.url, {method: 'get'})
             .then((response) => {
                 return response.json();
             })
@@ -52,10 +53,10 @@ class AutoCompleteTextBox extends Component {
         })
     }
 
-    renderList() {
-        const { q } = this.state;
+    renderFilteredList() {
+        const { inputText } = this.state;
         return (
-            q.length === 0 ? null : (
+            inputText.length === 0 ? null : (
                 <ul className="filtered-list">
                     {this.state.filteredList.length > 0 &&
                     this.state.filteredList.map((countryObj) => 
@@ -71,13 +72,25 @@ class AutoCompleteTextBox extends Component {
             <div className='wrapper'>
                 <input 
                     placeholder="Enter a country name..." 
-                    type='text' value={this.state.q} 
+                    type='text' value={this.state.inputText} 
                     onChange={this.changeQuery} 
                 />
-                {this.renderList()}
+                {this.renderFilteredList()}
             </div>
         )
     }
 }
+
+AutoCompleteTextBox.propTypes = {
+    url: PropTypes.string.isRequired,
+    debounceTime: PropTypes.number.isRequired
+}
+
+AutoCompleteTextBox.defaultProps = {
+    url: '',
+    debounceTime: 500
+}
+
+
 
 export default AutoCompleteTextBox;
