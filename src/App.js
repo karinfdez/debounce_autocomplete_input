@@ -8,7 +8,7 @@ function App() {
       <AutoCompleteTextBox 
         url="https://restcountries.eu/rest/v2/all"
         debounceTime={250}
-        numberTypeChars={3}
+        numberTypeChars={2}
       />
     </div>
   );
