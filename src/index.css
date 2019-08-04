@@ -1,17 +1,4 @@
 
-div.wrapper {
-  /* display: flex;
-  justify-content: center;
-  align-items: center; */
-}
-
-input[type="text"] {
-   border: 1px solid black;
-   width: 250px;
-   height: 30px;
-   /* max-width: 50%; */
-}
-ul.filteredList {
-  display: block;
-  width: 250px;
+body {
+  background-image: linear-gradient(to right, #293462, #216583);
 }

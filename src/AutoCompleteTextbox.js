@@ -79,7 +79,7 @@ class AutoCompleteTextBox extends Component {
 
     render() {
         return (
-            <div className='autocompleteTextBox'>
+            <div className='wrapper-container'>
                 <input 
                     placeholder="Enter a country name..." 
                     value={this.state.inputText} 

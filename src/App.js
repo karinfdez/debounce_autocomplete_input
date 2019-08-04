@@ -4,11 +4,13 @@ import AutoCompleteTextBox from './AutoCompleteTextBox';
 
 function App() {
   return ( 
-    <AutoCompleteTextBox 
-      url="https://restcountries.eu/rest/v2/all"
-      debounceTime={250}
-      numberTypeChars={3}
-    />
+    <div className="App-component">
+      <AutoCompleteTextBox 
+        url="https://restcountries.eu/rest/v2/all"
+        debounceTime={250}
+        numberTypeChars={3}
+      />
+    </div>
   );
 }
 
