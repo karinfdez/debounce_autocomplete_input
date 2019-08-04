@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import AutoCompleteTextbox from './AutoCompleteTextbox';
+import AutoCompleteTextBox from './AutoCompleteTextBox';
 
 function App() {
   return ( 
-    <AutoCompleteTextbox 
+    <AutoCompleteTextBox 
       url="https://restcountries.eu/rest/v2/all"
-      debounceTime={500}
+      debounceTime={250}
       numberTypeChars={3}
     />
   );
