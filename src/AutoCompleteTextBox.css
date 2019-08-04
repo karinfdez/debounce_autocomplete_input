@@ -36,6 +36,10 @@
     cursor: pointer;
 }
 
+.wrapper-container li:hover {
+    background-color: rgba(128,128,128,.20)
+}
+
 .list-selection {
     text-align: left;
 }
