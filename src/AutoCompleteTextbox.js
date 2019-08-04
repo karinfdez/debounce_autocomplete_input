@@ -60,7 +60,7 @@ class AutoCompleteTextBox extends Component {
         const { inputText, filteredList } = this.state;
         return (
             inputText.length === 0  ? null : (
-                <ul className="filtered-list">
+                <ul className="list-selection">
                     {filteredList.length > 0 && (
                         filteredList.map((countryObj) => 
                             <li 
