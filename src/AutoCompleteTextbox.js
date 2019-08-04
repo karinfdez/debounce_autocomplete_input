@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { debounce } from "throttle-debounce";
 import PropTypes from 'prop-types';
 import './AutoCompleteTextBox.css' //To ensure it loads on the head of the document
+import fetchData from './services/countries-services';
 
 class AutoCompleteTextBox extends Component {
     constructor(props) {
@@ -35,30 +36,17 @@ class AutoCompleteTextBox extends Component {
     autocompleteSearch = (inputText) => {
         //This fetch is mocking a request to an API that varies 
         //everytime there is a change when user types
-        this.fetchApi()
+        fetchData(this.props.url, this.props.fetchData)
         .then(list => {
             let filteredList = [];
             const regex = new RegExp(`^${inputText}`,'i');
-            filteredList = list.filter(objectElem => {
+            filteredList = list && list.length > 0 && list.filter(objectElem => {
                 return objectElem.name.match(regex);
             })
             this.setState({countries: list, filteredList});
-        }, error => {
-            console.error(error);
         })
-    }
-
-    fetchApi = () => {
-        return new Promise((resolve, reject) => {
-            fetch(this.props.url, {method: 'get'})
-            .then((response) => {
-                return response.json();
-            })
-            .then((jsonResult) => {
-                resolve(jsonResult)
-            }).catch((err) => {
-                reject(Error(err.message));
-            });
+        .catch(error => {
+            console.error(error);
         })
     }
 
@@ -107,13 +95,15 @@ class AutoCompleteTextBox extends Component {
 AutoCompleteTextBox.propTypes = {
     url: PropTypes.string.isRequired,
     debounceTime: PropTypes.number,
-    numberTypeChars: PropTypes.number
+    numberTypeChars: PropTypes.number,
+    fetchData: PropTypes.object
 }
 
 AutoCompleteTextBox.defaultProps = {
     url: '',
-    debounceTime: 500,
-    numberTypeChars: 1
+    debounceTime: 250,
+    numberTypeChars: 1,
+    fetchData: {}
 }
 
 
