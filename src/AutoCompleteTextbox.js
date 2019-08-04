@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { debounce } from "throttle-debounce";
 import PropTypes from 'prop-types';
+import './AutoCompleteTextBox.css' //To ensure it loads on the head of the document
 
 class AutoCompleteTextBox extends Component {
     constructor(props) {
@@ -10,41 +11,44 @@ class AutoCompleteTextBox extends Component {
             countries: [],
             filteredList: []
         }
-        this.searchDebounced = debounce(this.props.debounceTime, this.autocompleteSearch);
+        this.searchDebounced = debounce(props.debounceTime, this.autocompleteSearch);
     }
 
-    changeQuery = ((e) => {
-        this.state.filteredList.length > 0 && 
-        this.setState({filteredList: []});
-        this.setState({inputText: e.target.value}, () => {
+    handleChange =(e) => {
+        const text =  e.target.value;
+        this.changeQuery(text);
+    };
+    
+    changeQuery(text) {
+        const newState = {
+            inputText: text
+        };
+        (this.state.filteredList.length > 0) && 
+        (newState.filteredList = []);
+        this.setState({ ...newState }, () => {
             if(this.state.inputText.length >= this.props.numberTypeChars) {
                 this.searchDebounced(this.state.inputText);
             }
         });
-    })
-
-    autocompleteSearch = (inputText) => {
-        if(inputText.length >= this.props.numberTypeChars) {
-            //This fetch is mocking a future request with different 
-            //query everytime there is a change when user types
-            this.fetchNames()
-            .then(countriesList => {
-                let filteredList = [];
-                this.setState({countries: countriesList}, 
-                    () => {
-                    const regex = new RegExp(`^${inputText}`,'i');
-                    filteredList = this.state.countries.filter(countryObj => {
-                        return countryObj.name.match(regex);
-                    })
-                })
-                this.setState({filteredList});
-            }, error => {
-                console.error(error);
-            })
-        }
     }
 
-    fetchNames = () => {
+    autocompleteSearch = (inputText) => {
+        //This fetch is mocking a request to an API that varies 
+        //everytime there is a change when user types
+        this.fetchApi()
+        .then(list => {
+            let filteredList = [];
+            const regex = new RegExp(`^${inputText}`,'i');
+            filteredList = list.filter(objectElem => {
+                return objectElem.name.match(regex);
+            })
+            this.setState({countries: list, filteredList});
+        }, error => {
+            console.error(error);
+        })
+    }
+
+    fetchApi = () => {
         return new Promise((resolve, reject) => {
             fetch(this.props.url, {method: 'get'})
             .then((response) => {
@@ -59,10 +63,9 @@ class AutoCompleteTextBox extends Component {
     }
 
     selectSuggestion(value) {
-        this.setState(() => ({
-            inputText: value,
+        this.setState({inputText: value, 
             filteredList: []
-        }))              
+        })  
     }
 
     renderFilteredList() {
@@ -74,7 +77,8 @@ class AutoCompleteTextBox extends Component {
                         filteredList.map((countryObj) => 
                             <li 
                                 key={countryObj.alpha2Code} 
-                                onClick={() => this.selectSuggestion(countryObj.name)}
+                                onClick={() => 
+                                this.selectSuggestion(countryObj.name)}
                             >
                                 {countryObj.name}
                             </li>
@@ -87,12 +91,12 @@ class AutoCompleteTextBox extends Component {
 
     render() {
         return (
-            <div className='wrapper'>
+            <div className='autocompleteTextBox'>
                 <input 
                     placeholder="Enter a country name..." 
                     value={this.state.inputText} 
                     type='text' 
-                    onChange={this.changeQuery} 
+                    onChange={this.handleChange} 
                 />
                 {this.renderFilteredList()}
             </div>
