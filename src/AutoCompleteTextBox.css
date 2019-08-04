@@ -1,18 +1,41 @@
 .wrapper-container {
-    width: 50%;
+    width: 350px;
     margin: 0 auto;
     -webkit-box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1), 0 2px 4px 1px rgba(0,0,0,.18);
     -moz-box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1), 0 2px 4px 1px rgba(0,0,0,.18);
     box-shadow: 0px 0px 0px 1px rgba(0,0,0,.1), 0 2px 4px 1px rgba(0,0,0,.18);
     border: 1px solid grey;
     background: #fff;
-    border-radius: 5px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .wrapper-container input {
+    min-height: 30px;
     width: 100%;
-    height: 40px;
     border: none;
-    border-radius: 5px;
+    font-size: 14px;
+    padding: 8px 5px;
+    box-sizing: border-box;
+    outline: none;
+}
+
+.wrapper-container ul {
+    list-style-type: none;
+    font-size: 14px;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid grey;
+}
+
+.wrapper-container ul::before {
+    content: '';
+}
+
+.wrapper-container li {
+    padding: 8px 5px;
+    cursor: pointer;
+}
+
+.list-selection {
+    text-align: left;
 }
