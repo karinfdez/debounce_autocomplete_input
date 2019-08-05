@@ -13,7 +13,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "format": "prettier \"src/**/*.{js,html}\" —write"
+    "format": "prettier \"src/**/*.{js,html}\" —write",
+    "lint": "eslint \"src/**/*.{js, jsx}\" --quiet"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -31,7 +32,10 @@
     ]
   },
   "devDependencies": {
-    "eslint": "^6.1.0",
+    "eslint": "^5.16.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "prettier": "^1.18.2"
   }
