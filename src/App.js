@@ -9,6 +9,8 @@ function App() {
         url="https://restcountries.eu/rest/v2/all"
         debounceTime={250}
         numberTypeChars={2}
+        amountToHideList={1}
+        placeholderMessage={'Enter a country name...'}
       />
     </div>
   );

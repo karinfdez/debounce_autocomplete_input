@@ -24,7 +24,8 @@ class AutoCompleteTextBox extends Component {
         const newState = {
             inputText: text
         };
-        (this.state.filteredList.length > 0) && 
+        //Hides list when removing input and leaving # of elements typed
+        (text.length === this.props.amountToHideList) && 
         (newState.filteredList = []);
         this.setState({ ...newState }, () => {
             if(this.state.inputText.length >= this.props.numberTypeChars) {
@@ -51,9 +52,10 @@ class AutoCompleteTextBox extends Component {
     }
 
     selectSuggestion(value) {
-        this.setState({inputText: value, 
+        this.setState({
+            inputText: value, 
             filteredList: []
-        })  
+        });
     }
 
     renderFilteredList() {
@@ -81,7 +83,7 @@ class AutoCompleteTextBox extends Component {
         return (
             <div className='wrapper-container'>
                 <input 
-                    placeholder="Enter a country name..." 
+                    placeholder={this.props.placeholderMessage}
                     value={this.state.inputText} 
                     type='text' 
                     onChange={this.handleChange} 
@@ -96,14 +98,18 @@ AutoCompleteTextBox.propTypes = {
     url: PropTypes.string.isRequired,
     debounceTime: PropTypes.number,
     numberTypeChars: PropTypes.number,
-    fetchData: PropTypes.object
+    fetchData: PropTypes.object,
+    amountToHideList: PropTypes.number,
+    placeholderMessage: PropTypes.string
 }
 
 AutoCompleteTextBox.defaultProps = {
     url: '',
     debounceTime: 250,
     numberTypeChars: 1,
-    fetchData: {}
+    fetchData: {},
+    amountToHideList: 1,
+    placeholderMessage: ''
 }
 
 
