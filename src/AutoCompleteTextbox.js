@@ -83,14 +83,13 @@ class AutoCompleteTextBox extends Component {
   render() {
     return (
       <div className="wrapper-container">
-        <label htmlFor="search input">
-          <input
-            placeholder={this.props.placeholderMessage}
-            value={this.state.inputText}
-            type="text"
-            onChange={this.handleChange}
-          />
-        </label>
+        <div id="input-label">Type a country name: </div>
+        <input
+          value={this.state.inputText}
+          type="text"
+          onChange={this.handleChange}
+          aria-labelledby={this.props.label}
+        />
         {this.renderFilteredList()}
       </div>
     );
@@ -103,7 +102,7 @@ AutoCompleteTextBox.propTypes = {
   numberTypeChars: PropTypes.number,
   fetchData: PropTypes.object,
   amountToHideList: PropTypes.number,
-  placeholderMessage: PropTypes.string
+  label: PropTypes.string
 };
 
 AutoCompleteTextBox.defaultProps = {
@@ -112,7 +111,7 @@ AutoCompleteTextBox.defaultProps = {
   numberTypeChars: 1,
   fetchData: {},
   amountToHideList: 1,
-  placeholderMessage: ""
+  label: ""
 };
 
 export default AutoCompleteTextBox;
