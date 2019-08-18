@@ -11,6 +11,7 @@ function App() {
         numberTypeChars={2}
         amountToHideList={1}
         label="Country name"
+        labelMessage="Type a country name:"
       />
     </div>
   );
