@@ -66,10 +66,12 @@ class AutoCompleteTextBox extends Component {
   renderFilteredList() {
     const { inputText, filteredList } = this.state;
     return inputText.length === 0 ? null : (
-      <ul className="list-selection">
+      <ul className="list-selection" role="listbox">
         {filteredList.length > 0 &&
           filteredList.map(countryObj => (
             <li
+              role="option"
+              aria-selected="false"
               key={countryObj.alpha2Code}
               onClick={() => this.selectSuggestion(countryObj.name)}
             >
@@ -83,10 +85,9 @@ class AutoCompleteTextBox extends Component {
   render() {
     return (
       <div className="wrapper-container">
-        <label id="input-label" htmlFor={this.props.label}>
-          {this.props.labelMessage}
-        </label>
+        <label htmlFor={this.props.label}>{this.props.labelMessage}</label>
         <input
+          id={this.props.label}
           value={this.state.inputText}
           type="text"
           onChange={this.handleChange}
